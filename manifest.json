@@ -1,6 +1,6 @@
 {
 	"manifest_version": 3,
-	"name": "Commit Viewer",
+	"name": "Github Commit Viewer",
 	"version": "1.0.0",
 	"description": "按照时间维度观察Github repo的Commit分布",
 	"icons": {
