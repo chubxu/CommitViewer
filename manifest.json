@@ -21,6 +21,9 @@
 			"matches": ["https://github.com/*"],
 			"js": [
 				"js/jquery-3.6.4.min.js",
+				"js/moment.min.js",
+				"js/echarts-5.4.1.min.js",
+				"js/msg-type-constants.js",
 				"js/content-script.js"
 			],
 			"css": [
@@ -33,7 +36,7 @@
 		"http://*/*", 
 		"https://*/*"
 	],
-	"permissions": [],
+	"permissions": ["tabs"],
 	"homepage_url": "https://github.com/chubxu/CommitViewer",
 	"default_locale": "zh_CN"
 }
