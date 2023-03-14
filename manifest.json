@@ -24,10 +24,14 @@
 				"js/moment.min.js",
 				"js/echarts-5.4.1.min.js",
 				"js/msg-type-constants.js",
+				"js/datepicker.all.min.js",
 				"js/content-script.js"
 			],
 			"css": [
-				"css/global.css"
+				"css/content.css",
+				"css/base.css",
+				"css/datepicker.css",
+				"css/iconfont.css"
 			],
 			"run_at": "document_end"
 		}

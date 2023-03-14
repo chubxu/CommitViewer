@@ -19,16 +19,31 @@ function injectCommitViewerButton() {
     </li>
   `)
   $('#commit-viewer-tab').on('click', function () {
-    if ($('#commit-viewer-added-dom').length > 0) {
-      $('#commit-viewer-added-dom').remove()
+    if ($('.commit-viewer-container').length > 0) {
+      $('.commit-viewer-container').remove()
     } else {
       $('#repo-content-turbo-frame').before(`
-        <div id="commit-viewer-added-dom" style="height: 250px; width: 100%;"></div>
+        <div class="commit-viewer-container">
+          
+          <div class="commit-viewer-chart"></div>
+
+          <div class="commit-viewer-control-component">
+           
+          </div>
+          
+        </div>
       `)
       sendDrawScatterMessage()
     }
   })
 }
+
+ // <div class="c-datepicker-date-editor J-datepicker-range-day mt10">
+//   <i class="c-datepicker-range__icon kxiconfont icon-clock"></i>
+//   <input placeholder="开始日期" name="" class="c-datepicker-data-input only-date" value="">
+//   <span class="c-datepicker-range-separator">-</span>
+//   <input placeholder="结束日期" name="" class="c-datepicker-data-input only-date" value="">
+// </div>
 
 function sendDrawScatterMessage() {
   
@@ -86,7 +101,7 @@ function drawScatter(response) {
     })
   }
 
-  var dom = document.getElementById('commit-viewer-added-dom');
+  var dom = document.querySelector('.commit-viewer-chart');
   var myChart = echarts.init(dom, null, {
     renderer: 'canvas',
     useDirtyRect: false
@@ -105,12 +120,12 @@ function drawScatter(response) {
     return [item[0], item[1], item[2]];
   });
   option = {
-    title: {
-      text: 'Commit View of Github'
-    },
+    // title: {
+    //   text: 'Commit View of Github'
+    // },
     legend: {
       data: ['Commit Counts'],
-      left: 'right',
+      left: 'left',
       itemStyle: {
         color: '#216e39'
       }
@@ -158,7 +173,7 @@ function drawScatter(response) {
       name: 'Commit Counts',
       type: 'scatter',
       symbolSize: function (val) {
-        return val[2] * 2;
+        return val[2] * 4;
       },
       data: data,
       animationDelay: function (idx) {

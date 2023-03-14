@@ -1,0 +1,20 @@
+.commit-viewer-container {
+  height: 250px; 
+  max-width: 1280px; 
+  margin-right: auto; 
+  margin-left: auto;
+
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.commit-viewer-chart {
+  width: 100%;
+  height: 250px;
+}
+
+.commit-viewer-control-component {
+  width: 440px;
+  padding: 50px 15px 0 15px;
+}
