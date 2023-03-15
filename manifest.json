@@ -24,14 +24,16 @@
 				"js/moment.min.js",
 				"js/echarts-5.4.1.min.js",
 				"js/msg-type-constants.js",
-				"js/datepicker.all.min.js",
+				"js/daterangepicker.js",
 				"js/content-script.js"
 			],
 			"css": [
 				"css/content.css",
 				"css/base.css",
 				"css/datepicker.css",
-				"css/iconfont.css"
+				"css/iconfont.css",
+				"css/bootstrap.4.1.0.min.css",
+				"css/daterangepicker.css"
 			],
 			"run_at": "document_end"
 		}

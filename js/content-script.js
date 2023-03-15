@@ -24,15 +24,54 @@ function injectCommitViewerButton() {
     } else {
       $('#repo-content-turbo-frame').before(`
         <div class="commit-viewer-container">
-          
-          <div class="commit-viewer-chart"></div>
-
-          <div class="commit-viewer-control-component">
-           
+          <div class="commit-viewer-left">
+            <div class="commit-viewer-control-component">
+              <input type="text" id="commit-viewer-date-range" class="form-control" />
+              <div class="btn btn-primary ml-2">Reload</div>
+            </div>
+            <div class="commit-viewer-chart"></div>
           </div>
-          
+
+          <div class="commit-viewer-right">
+            <h2 class="mb-3 h4">Commits Summarize</h2>
+          </div>
         </div>
       `)
+      $('#commit-viewer-date-range').daterangepicker({
+        "timePicker": true,
+        "timePickerSeconds": true,
+        "autoApply": true,
+        "ranges": {
+          "Today": [
+            "2023-03-15T14:34:49.202Z",
+            "2023-03-15T14:34:49.202Z"
+          ],
+          "Yesterday": [
+            "2023-03-14T14:34:49.202Z",
+            "2023-03-14T14:34:49.202Z"
+          ],
+          "Last 7 Days": [
+            "2023-03-09T14:34:49.202Z",
+            "2023-03-15T14:34:49.202Z"
+          ],
+          "Last 30 Days": [
+            "2023-02-14T14:34:49.202Z",
+            "2023-03-15T14:34:49.202Z"
+          ],
+          "This Month": [
+            "2023-02-28T16:00:00.000Z",
+            "2023-03-31T15:59:59.999Z"
+          ],
+          "Last Month": [
+            "2023-01-31T16:00:00.000Z",
+            "2023-02-28T15:59:59.999Z"
+          ]
+        },
+        "alwaysShowCalendars": true,
+        "startDate": "03/09/2023",
+        "endDate": "03/15/2023",
+        "opens": "center",
+      }, () => {});
       sendDrawScatterMessage()
     }
   })
@@ -123,13 +162,13 @@ function drawScatter(response) {
     // title: {
     //   text: 'Commit View of Github'
     // },
-    legend: {
-      data: ['Commit Counts'],
-      left: 'left',
-      itemStyle: {
-        color: '#216e39'
-      }
-    },
+    // legend: {
+    //   data: ['Commit Counts'],
+    //   left: 'left',
+    //   itemStyle: {
+    //     color: '#216e39'
+    //   }
+    // },
     tooltip: {
       position: 'top',
       formatter: function (params) {
@@ -146,6 +185,7 @@ function drawScatter(response) {
       left: 10,
       bottom: 10,
       right: 10,
+      top: 20,
       containLabel: true
     },
     xAxis: {

@@ -1,12 +1,24 @@
 .commit-viewer-container {
-  height: 250px; 
+  height: 300px; 
   max-width: 1280px; 
-  margin-right: auto; 
-  margin-left: auto;
+  margin: 30px auto 20px auto;
 
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
+}
+
+.commit-viewer-left {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-end;
+}
+
+.commit-viewer-control-component {
+  display: flex;
+  flex-direction: row;
+  
+  width: 40%;
 }
 
 .commit-viewer-chart {
@@ -14,7 +26,10 @@
   height: 250px;
 }
 
-.commit-viewer-control-component {
-  width: 440px;
-  padding: 50px 15px 0 15px;
+.commit-viewer-right {
+  width: 405px;
+  height: 100px;
+  margin: 0px 30px 0 15px;
+
+  border-bottom: 1px #d8dee4 solid;
 }
