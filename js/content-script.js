@@ -1,5 +1,8 @@
+let startDate = moment().subtract(1, 'months')
+let endDate = moment()
 $(function () {
   injectCommitViewerButton()
+  injectCommitViewer()
 })
 
 function messageToBackground(msgType, callbackFunc) {
@@ -18,6 +21,9 @@ function injectCommitViewerButton() {
       </a>
     </li>
   `)
+}
+
+function injectCommitViewer() {
   $('#commit-viewer-tab').on('click', function () {
     if ($('.commit-viewer-container').length > 0) {
       $('.commit-viewer-container').remove()
@@ -27,7 +33,7 @@ function injectCommitViewerButton() {
           <div class="commit-viewer-left">
             <div class="commit-viewer-control-component">
               <input type="text" id="commit-viewer-date-range" class="form-control" />
-              <div class="btn btn-primary ml-2">Reload</div>
+              <div class="btn btn-primary ml-2" id="reload-btn">Reload</div>
             </div>
             <div class="commit-viewer-chart"></div>
           </div>
@@ -37,41 +43,53 @@ function injectCommitViewerButton() {
           </div>
         </div>
       `)
+
+      // 绑定日期范围选择组件
       $('#commit-viewer-date-range').daterangepicker({
         "timePicker": true,
         "timePickerSeconds": true,
         "autoApply": true,
         "ranges": {
           "Today": [
-            "2023-03-15T14:34:49.202Z",
-            "2023-03-15T14:34:49.202Z"
+            moment().startOf('day'),
+            moment().endOf('day')
           ],
           "Yesterday": [
-            "2023-03-14T14:34:49.202Z",
-            "2023-03-14T14:34:49.202Z"
+            moment().subtract(1, 'days').startOf('day'),
+            moment().subtract(1, 'days').endOf('day')
           ],
           "Last 7 Days": [
-            "2023-03-09T14:34:49.202Z",
-            "2023-03-15T14:34:49.202Z"
+            moment().subtract(7, 'days').startOf('day'),
+            moment().endOf('day')
           ],
           "Last 30 Days": [
-            "2023-02-14T14:34:49.202Z",
-            "2023-03-15T14:34:49.202Z"
+            moment().subtract(30, 'days').startOf('day'),
+            moment().endOf('day')
           ],
           "This Month": [
-            "2023-02-28T16:00:00.000Z",
-            "2023-03-31T15:59:59.999Z"
+            moment().startOf('month'),
+            moment().endOf('month')
           ],
           "Last Month": [
-            "2023-01-31T16:00:00.000Z",
-            "2023-02-28T15:59:59.999Z"
+            moment().subtract(1, 'months').startOf('month'),
+            moment().subtract(1, 'months').endOf('month')
           ]
         },
         "alwaysShowCalendars": true,
-        "startDate": "03/09/2023",
-        "endDate": "03/15/2023",
+        "startDate": startDate,
+        "endDate": endDate,
         "opens": "center",
-      }, () => {});
+      }, (start, end, label) => {
+        startDate = start
+        endDate = end
+      })
+
+      // 绑定reload监听事件
+      $('#reload-btn').on('click', () => {
+        let startDateUTC = moment(startDate).utc().format('YYYY-MM-DDTHH:mm:ss')
+        let endDateUTC = moment(endDate).utc().format('YYYY-MM-DDTHH:mm:ss')
+        console.log(startDateUTC, endDateUTC)
+      })
       sendDrawScatterMessage()
     }
   })
