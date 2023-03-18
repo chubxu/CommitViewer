@@ -13,6 +13,16 @@
   align-items: flex-end;
 }
 
+.commit-viewer-error {
+  display: flex;
+  flex-direction: column;
+  padding: 0 15% 0 15%;
+  color: #ff0000;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
 .commit-viewer-control-component {
   display: flex;
   flex-direction: row;
