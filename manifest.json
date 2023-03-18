@@ -30,8 +30,6 @@
 			"css": [
 				"css/content.css",
 				"css/base.css",
-				"css/datepicker.css",
-				"css/iconfont.css",
 				"css/bootstrap.4.1.0.min.css",
 				"css/daterangepicker.css"
 			],
