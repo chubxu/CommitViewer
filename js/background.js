@@ -30,12 +30,16 @@ const contentScriptMessageHandler = async (request) => {
         let repo = ownerAndRepo[1]
         let url = `https://api.github.com/repos/${owner}/${repo}/commits?since=${request.since}&until=${request.until}&per_page=${request.perPage}`
         try {
+          let headers = {
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+          }
+          if (request.accessToken) {
+            headers.Authorization = `Bearer ${request.accessToken}`
+          }
           let response = await fetch(url, {
             method: 'GET',
-            headers: {
-              'Accept': 'application/vnd.github+json',
-              'X-GitHub-Api-Version': '2022-11-28',
-            }
+            headers: headers
           })
           let res = await response.json()
           messageToContentScript(request, res, null)

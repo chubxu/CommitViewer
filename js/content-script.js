@@ -3,6 +3,21 @@ let endDate = moment()
 let totalCommits = 0
 let totalDays = endDate.diff(startDate, 'days')
 let averageCommits = 0
+let accessToken = null
+
+let commitViewerLeftHtml = `
+<div id="commit-viewer-left" class="commit-viewer-left">
+  <div class="commit-viewer-control-component">
+    <input type="text" id="commit-viewer-date-range" class="form-control" />
+    <div id="commit-viewer-reload-btn" class="btn btn-primary ml-2">
+      <svg t="1679063487021" style="color: #ffffff" class="octicon mr-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2983" width="16" height="16"><path d="M347.648 841.376c42.24 19.392 89.248 30.208 138.752 30.208 183.808 0 332.8-148.992 332.8-332.8 0-68.096-20.448-131.424-55.552-184.16l73.504-73.504C890.24 353.248 921.6 442.368 921.6 538.784c0 240.352-194.848 435.2-435.2 435.2-67.424 0-131.264-15.328-188.224-42.688l7.328 27.392c7.328 27.328-8.896 55.392-36.192 62.72s-55.392-8.896-62.72-36.192l-39.744-148.352c-7.328-27.328 8.896-55.392 36.192-62.72L351.392 734.4c27.328-7.328 55.392 8.896 62.72 36.192s-8.896 55.392-36.192 62.72l-30.272 8.128zM589.28 115.84l-21.056-36.448c-14.144-24.48-5.76-55.808 18.752-69.952s55.808-5.76 69.952 18.752l76.8 133.024c14.144 24.48 5.76 55.808-18.752 69.952l-133.024 76.8c-24.48 14.144-55.808 5.76-69.952-18.752s-5.76-55.808 18.752-69.952l14.08-8.128a334.88 334.88 0 0 0-58.432-5.12c-183.808 0-332.8 148.992-332.8 332.8 0 40.64 7.296 79.616 20.64 115.616l-77.792 77.792C67.488 673.952 51.2 608.288 51.2 538.816c0-240.352 194.848-435.2 435.2-435.2 35.424 0 69.888 4.224 102.88 12.224z" p-id="2984"></path></svg>
+      Reload
+    </div>
+  </div>
+  <div class="commit-viewer-chart"></div>
+</div>
+`
+
 
 // 页面加载完成后，初始化 CommitViewer 组件
 $(function () {
@@ -10,10 +25,12 @@ $(function () {
   injectCommitViewer()
 })
 
+
 // 发送消息至 background
 function messageToBackground(msgType, callbackFunc) {
   chrome.runtime.sendMessage(msgType, callbackFunc)
 }
+
 
 // 初始化button
 function injectCommitViewerButton() {
@@ -30,6 +47,7 @@ function injectCommitViewerButton() {
   `)
 }
 
+
 // 初始化展示组件
 function injectCommitViewer() {
   $('#commit-viewer-tab').on('click', function () {
@@ -38,17 +56,7 @@ function injectCommitViewer() {
     } else {
       $('#repo-content-turbo-frame').before(`
         <div class="commit-viewer-container">
-          <div id="commit-viewer-left" class="commit-viewer-left">
-            <div class="commit-viewer-control-component">
-              <input type="text" id="commit-viewer-date-range" class="form-control" />
-              <div id="reload-btn" class="btn btn-primary ml-2">
-              <svg t="1679063487021" style="color: #ffffff" class="octicon mr-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2983" width="16" height="16"><path d="M347.648 841.376c42.24 19.392 89.248 30.208 138.752 30.208 183.808 0 332.8-148.992 332.8-332.8 0-68.096-20.448-131.424-55.552-184.16l73.504-73.504C890.24 353.248 921.6 442.368 921.6 538.784c0 240.352-194.848 435.2-435.2 435.2-67.424 0-131.264-15.328-188.224-42.688l7.328 27.392c7.328 27.328-8.896 55.392-36.192 62.72s-55.392-8.896-62.72-36.192l-39.744-148.352c-7.328-27.328 8.896-55.392 36.192-62.72L351.392 734.4c27.328-7.328 55.392 8.896 62.72 36.192s-8.896 55.392-36.192 62.72l-30.272 8.128zM589.28 115.84l-21.056-36.448c-14.144-24.48-5.76-55.808 18.752-69.952s55.808-5.76 69.952 18.752l76.8 133.024c14.144 24.48 5.76 55.808-18.752 69.952l-133.024 76.8c-24.48 14.144-55.808 5.76-69.952-18.752s-5.76-55.808 18.752-69.952l14.08-8.128a334.88 334.88 0 0 0-58.432-5.12c-183.808 0-332.8 148.992-332.8 332.8 0 40.64 7.296 79.616 20.64 115.616l-77.792 77.792C67.488 673.952 51.2 608.288 51.2 538.816c0-240.352 194.848-435.2 435.2-435.2 35.424 0 69.888 4.224 102.88 12.224z" p-id="2984"></path></svg>
-                Reload
-              </div>
-            </div>
-            <div class="commit-viewer-chart"></div>
-          </div>
-
+          ${commitViewerLeftHtml}
           <div class="commit-viewer-right">
             <h2 class="mb-3 h4">Commits Summarize</h2>
             <div class="my-3"></div>
@@ -64,78 +72,93 @@ function injectCommitViewer() {
           </div>
         </div>
       `)
-
-      // 绑定日期范围选择组件
-      $('#commit-viewer-date-range').daterangepicker({
-        "timePicker": true,
-        "timePickerSeconds": true,
-        "autoApply": true,
-        "ranges": {
-          "Today": [
-            moment().startOf('day'),
-            moment().endOf('day')
-          ],
-          "Yesterday": [
-            moment().subtract(1, 'days').startOf('day'),
-            moment().subtract(1, 'days').endOf('day')
-          ],
-          "Last 7 Days": [
-            moment().subtract(7, 'days').startOf('day'),
-            moment().endOf('day')
-          ],
-          "Last 30 Days": [
-            moment().subtract(30, 'days').startOf('day'),
-            moment().endOf('day')
-          ],
-          "This Month": [
-            moment().startOf('month'),
-            moment().endOf('month')
-          ],
-          "Last Month": [
-            moment().subtract(1, 'months').startOf('month'),
-            moment().subtract(1, 'months').endOf('month')
-          ]
-        },
-        "alwaysShowCalendars": true,
-        "startDate": startDate,
-        "endDate": endDate,
-        "opens": "center",
-      }, (start, end, label) => {
-        startDate = start
-        endDate = end
-        totalDays = endDate.diff(startDate, 'days')
-      })
-
-      // 绑定reload监听事件，点击后绘制
-      $('#reload-btn').on('click', () => {
-        let startDateUTC = moment(startDate).utc().format('YYYY-MM-DDTHH:mm:ss')
-        let endDateUTC = moment(endDate).utc().format('YYYY-MM-DDTHH:mm:ss')
-        sendDrawScatterMessage({
-          since: startDateUTC,
-          until: endDateUTC,
-          perPage: 100
-        })
-      })
-
-      // 初始绘制
-      sendDrawScatterMessage({
-        since: moment().utc().subtract(1, 'months').format("YYYY-MM-DDTHH:mm:ss"),
-        until: moment().utc().format("YYYY-MM-DDTHH:mm:ss"),
-        perPage: 100
-      })
+      initControlComponent()
+      initDrawScatter()
     }
   })
 }
 
+
+// 初始化控制组件事件：日期范围选择器、reload按钮事件
+function initControlComponent() {
+  // 绑定日期范围选择组件
+  $('#commit-viewer-date-range').daterangepicker({
+    "timePicker": true,
+    "timePickerSeconds": true,
+    "autoApply": true,
+    "ranges": {
+      "Today": [
+        moment().startOf('day'),
+        moment().endOf('day')
+      ],
+      "Yesterday": [
+        moment().subtract(1, 'days').startOf('day'),
+        moment().subtract(1, 'days').endOf('day')
+      ],
+      "Last 7 Days": [
+        moment().subtract(7, 'days').startOf('day'),
+        moment().endOf('day')
+      ],
+      "Last 365 Days": [
+        moment().subtract(365, 'days').startOf('day'),
+        moment().endOf('day')
+      ],
+      "This Month": [
+        moment().startOf('month'),
+        moment().endOf('month')
+      ],
+      "Last Month": [
+        moment().subtract(1, 'months').startOf('month'),
+        moment().subtract(1, 'months').endOf('month')
+      ],
+    },
+    "alwaysShowCalendars": true,
+    "startDate": startDate,
+    "endDate": endDate,
+    "opens": "center",
+  }, (start, end, label) => {
+    startDate = start
+    endDate = end
+    totalDays = endDate.diff(startDate, 'days')
+  })
+
+  // 绑定reload监听事件，点击后绘制
+  $('#commit-viewer-reload-btn').on('click', () => {
+    let startDateUTC = moment(startDate).utc().format('YYYY-MM-DDTHH:mm:ss')
+    let endDateUTC = moment(endDate).utc().format('YYYY-MM-DDTHH:mm:ss')
+    sendDrawScatterMessage({
+      since: startDateUTC,
+      until: endDateUTC,
+      perPage: 100,
+      accessToken: accessToken
+    })
+  })
+}
+
+
+// 初始绘制
+function initDrawScatter() {
+  sendDrawScatterMessage({
+    since: moment().utc().subtract(1, 'months').format("YYYY-MM-DDTHH:mm:ss"),
+    until: moment().utc().format("YYYY-MM-DDTHH:mm:ss"),
+    perPage: 100,
+    accessToken: accessToken
+  })
+}
+
+
 // 发送绘图消息
 function sendDrawScatterMessage(requestParams) {
+  console.log('sendRequest: ', requestParams)
   messageToBackground({
     type: LIST_COMMITS,
     since: requestParams.since,
     until: requestParams.until,
     perPage: requestParams.perPage,
+    accessToken: requestParams.accessToken,
   }, (res) => {})
 }
+
 
 // 真正绘图的方法
 function drawScatter(response) {
@@ -144,6 +167,7 @@ function drawScatter(response) {
   let scatterDataArray = []
   let scatterDataObject = {}
   if (response && response.length > 0) {
+    totalCommits = response.length
     response.forEach(({
       commit: {
         committer: {
@@ -175,7 +199,6 @@ function drawScatter(response) {
         scatterDataArray.push(scatterData)
       })
     })
-    totalCommits = scatterDataArray.length
     averageCommits = totalCommits / totalDays
     averageCommits = averageCommits.toFixed(2)
     
@@ -203,16 +226,6 @@ function drawScatter(response) {
     return [item[0], item[1], item[2]];
   });
   option = {
-    // title: {
-    //   text: 'Commit View of Github'
-    // },
-    // legend: {
-    //   data: ['Commit Counts'],
-    //   left: 'left',
-    //   itemStyle: {
-    //     color: '#216e39'
-    //   }
-    // },
     tooltip: {
       position: 'top',
       formatter: function (params) {
@@ -304,8 +317,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           <div>${request.response.message}</div>
           <br/>
           <a href="${request.response.documentation_url}">${request.response.documentation_url}</a>
+          <br/>
+          <input id="commit-viewer-error-access-input" type="text" class="form-control commit-viewer-error-access-input" placeholder="Enter Access Token" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <br/>
+          <div id="commit-viewer-error-reload-btn" class="btn btn-primary ml-2">
+            <svg t="1679063487021" style="color: #ffffff" class="octicon mr-2" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2983" width="16" height="16"><path d="M347.648 841.376c42.24 19.392 89.248 30.208 138.752 30.208 183.808 0 332.8-148.992 332.8-332.8 0-68.096-20.448-131.424-55.552-184.16l73.504-73.504C890.24 353.248 921.6 442.368 921.6 538.784c0 240.352-194.848 435.2-435.2 435.2-67.424 0-131.264-15.328-188.224-42.688l7.328 27.392c7.328 27.328-8.896 55.392-36.192 62.72s-55.392-8.896-62.72-36.192l-39.744-148.352c-7.328-27.328 8.896-55.392 36.192-62.72L351.392 734.4c27.328-7.328 55.392 8.896 62.72 36.192s-8.896 55.392-36.192 62.72l-30.272 8.128zM589.28 115.84l-21.056-36.448c-14.144-24.48-5.76-55.808 18.752-69.952s55.808-5.76 69.952 18.752l76.8 133.024c14.144 24.48 5.76 55.808-18.752 69.952l-133.024 76.8c-24.48 14.144-55.808 5.76-69.952-18.752s-5.76-55.808 18.752-69.952l14.08-8.128a334.88 334.88 0 0 0-58.432-5.12c-183.808 0-332.8 148.992-332.8 332.8 0 40.64 7.296 79.616 20.64 115.616l-77.792 77.792C67.488 673.952 51.2 608.288 51.2 538.816c0-240.352 194.848-435.2 435.2-435.2 35.424 0 69.888 4.224 102.88 12.224z" p-id="2984"></path></svg>
+            Reload
+          </div>
         </div>
       `)
+      $('#commit-viewer-error-reload-btn').on('click', () => {
+        let startDateUTC = moment(startDate).utc().format('YYYY-MM-DDTHH:mm:ss')
+        let endDateUTC = moment(endDate).utc().format('YYYY-MM-DDTHH:mm:ss')
+        accessToken = $('#commit-viewer-error-access-input').val()
+        $('#commit-viewer-error').replaceWith(commitViewerLeftHtml)
+        initControlComponent()
+        sendDrawScatterMessage({
+          since: startDateUTC,
+          until: endDateUTC,
+          perPage: 100,
+          accessToken: accessToken
+        })
+      })
     } else {
       drawScatter(request.response)
     }

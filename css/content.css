@@ -23,10 +23,14 @@
   align-items: center;
 }
 
+.commit-viewer-error-access-input {
+  width: 75% !important;
+}
+
 .commit-viewer-control-component {
   display: flex;
   flex-direction: row;
-  
+  justify-content: flex-end;
   width: 35%;
 }
 
