@@ -14,11 +14,11 @@ Github Commit Viewer是一款简单且实用的Chrome插件。它可以帮助您
 
 1. 打开 [Chrome商店](https://chrome.google.com/webstore) 搜索“Github Commit Viewer”进行安装。
 2. 安装完成后，进入任意GitHub仓库页面，即可看到CommitView按钮。
-![img1](doc/img1.png)
+![img1](doc/img/img1.png)
 3. 点击CommitViewer按钮，即可看见该仓库提交时间分布，在某个时间点（以小时间隔统计）提交越多，散点覆盖面积越大。右边还有该时间段的简单统计。当再次点击CommitViewer按钮时，可以快速取消图标展示，完全不影响您日常使用GitHub。
-![img2](doc/img2.png)
+![img2](doc/img/img2.png)
 4. 通过时间组件，用户可以轻易切换观测时间段，以便掌握不同时间段的提交趋势。
-![img3](doc/img3.png)
+![img3](doc/img/img3.png)
 
 ## ❓ 常见问题
 
